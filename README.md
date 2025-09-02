@@ -60,11 +60,11 @@ Cobertura completa dos handlers com cenários de sucesso e erro utilizando xUnit
 ---
 
 ## 📁 Arquitetura
-├── API/             # Endpoints (Minimal API ou Controllers), Program.cs
-├── Application/     # Commands, Queries, Handlers
-├── Domain/          # Entidades, Value Objects, Regras de Negócio
-├── Infrastructure/  # Repositórios, Persistência, DI
-└── Tests/           # Testes unitários (xUnit)
+- API/             # Endpoints (Minimal API ou Controllers), Program.cs
+- Application/     # Commands, Queries, Handlers
+- Domain/          # Entidades, Value Objects, Regras de Negócio
+- Infrastructure/  # Repositórios, Persistência, DI
+- Tests/           # Testes unitários (xUnit)
 
 ---
 
