@@ -36,21 +36,21 @@ dotnet run
 ---
 
 ## 📋 Endpoints
-Criar Cliente
-POST /api/clientes
+- Criar Cliente
+  POST /api/clientes
 
-Obter Cliente por ID
-GET /api/clientes/{id}
+- Obter Cliente por ID
+  GET /api/clientes/{id}
 
-Listar Todos os Clientes
-GET /api/clientes
+- Listar Todos os Clientes
+  GET /api/clientes
 
 ---
 
 ## ✅ Validações
-CNPJ: Formato brasileiro válido com dígitos verificadores
-Nome: Obrigatório e não vazio
-Duplicação: CNPJ único por cliente
+- CNPJ: Formato brasileiro válido com dígitos verificadores
+- Nome: Obrigatório e não vazio
+- Duplicação: CNPJ único por cliente
 
 ---
 
