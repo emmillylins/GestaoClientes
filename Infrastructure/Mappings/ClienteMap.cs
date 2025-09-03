@@ -1,5 +1,4 @@
 using Domain.Entidades;
-using Domain.ValueObjects;
 using FluentNHibernate.Mapping;
 
 namespace Infrastructure.Mappings
@@ -12,7 +11,8 @@ namespace Infrastructure.Mappings
             
             Id(x => x.Id)
                 .GeneratedBy.Assigned()
-                .Column("Id");
+                .Column("Id")
+                .CustomType("string");
                 
             Map(x => x.NomeFantasia)
                 .Column("NomeFantasia")
@@ -24,12 +24,12 @@ namespace Infrastructure.Mappings
                 cnpj.Map(c => c.Numero)
                     .Column("Cnpj")
                     .Length(14)
-                    .Not.Nullable()
-                    .Unique();
+                    .Not.Nullable();
             });
             
             Map(x => x.Ativo)
                 .Column("Ativo")
+                .CustomType("boolean")
                 .Not.Nullable();
         }
     }

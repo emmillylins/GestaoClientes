@@ -3,26 +3,35 @@ using Application.Clientes.Obter;
 using Domain.Comum;
 using Domain.Entidades;
 using Domain.ValueObjects;
+using Infrastructure.Data;
 using Infrastructure.Interfaces;
 using Infrastructure.Repositorios;
+using NHibernate;
 
 namespace Tests
 {
-    public class CriaClienteCommandHandlerTests
+    public class CriaClienteCommandHandlerTests : IDisposable
     {
+        private readonly ISessionFactory _sessionFactory;
+        private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
         private readonly CriaClienteCommandHandler _manipulador;
 
         public CriaClienteCommandHandlerTests()
         {
-            _repositorio = new EmMemoriaClienteRepositorio();
+            _sessionFactory = NHibernateConfig.CriarSessionFactory(emMemoria: true);
+
+            _session = _sessionFactory.OpenSession();
+
+            _session.CreateSQLQuery("CREATE TABLE IF NOT EXISTS Clientes (Id TEXT PRIMARY KEY, NomeFantasia TEXT NOT NULL, Cnpj TEXT NOT NULL UNIQUE, Ativo INTEGER NOT NULL)").ExecuteUpdate();
+
+            _repositorio = new NHibernateClienteRepositorio(_session);
             _manipulador = new CriaClienteCommandHandler(_repositorio);
         }
 
         [Fact]
         public async Task Handle_DeveCriarClienteComSucesso_QuandoDadosSaoValidos()
         {
-
             var comando = new CriaClienteCommand("Empresa Teste", "11.222.333/0001-81", true);
 
             var retorno = await _manipulador.Handle(comando);
@@ -32,6 +41,9 @@ namespace Tests
             Assert.Equal("11222333000181", retorno.Cnpj);
             Assert.True(retorno.Ativo);
             Assert.NotEqual(Guid.Empty, retorno.Id);
+
+            var clienteSalvo = await _repositorio.ObterPorIdAsync(retorno.Id);
+            Assert.NotNull(clienteSalvo);
         }
 
         [Fact]
@@ -40,7 +52,6 @@ namespace Tests
             var cnpjExistente = "11.222.333/0001-81";
             var comando1 = new CriaClienteCommand("Primeira Empresa", cnpjExistente, true);
             var comando2 = new CriaClienteCommand("Segunda Empresa", cnpjExistente, true);
-
 
             await _manipulador.Handle(comando1);
 
@@ -93,23 +104,32 @@ namespace Tests
 
             Assert.Equal("CNPJ inválido.", excecao.Message);
         }
+
+        public void Dispose()
+        {
+            _session?.Dispose();
+            _sessionFactory?.Dispose();
+        }
     }
 
-    public class ObtemClientePorIdQueryHandlerTests
+    public class ObtemClientePorIdQueryHandlerTests : IDisposable
     {
+        private readonly ISessionFactory _sessionFactory;
+        private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
         private readonly ObtemClientePorIdQueryHandler _manipulador;
 
         public ObtemClientePorIdQueryHandlerTests()
         {
-            _repositorio = new EmMemoriaClienteRepositorio();
+            _sessionFactory = NHibernateConfig.CriarSessionFactory(emMemoria: true);
+            _session = _sessionFactory.OpenSession();
+            _repositorio = new NHibernateClienteRepositorio(_session);
             _manipulador = new ObtemClientePorIdQueryHandler(_repositorio);
         }
 
         [Fact]
         public async Task Handle_DeveRetornarCliente_QuandoIdExiste()
         {
-
             var cnpj = new Cnpj("11.222.333/0001-81");
             var cliente = new Cliente("Empresa Teste", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
@@ -167,6 +187,12 @@ namespace Tests
             var retorno = await _manipulador.Handle(consulta);
 
             Assert.Null(retorno);
+        }
+
+        public void Dispose()
+        {
+            _session?.Dispose();
+            _sessionFactory?.Dispose();
         }
     }
 }

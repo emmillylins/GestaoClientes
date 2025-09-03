@@ -5,33 +5,29 @@ namespace Domain.Entidades
 {
     public class Cliente
     {
-        public Guid Id { get; private set; }
-        public string NomeFantasia { get; private set; }
-        public Cnpj Cnpj { get; private set; }
-        public bool Ativo { get; private set; }
+        public virtual Guid Id { get; protected set; }
+        public virtual string NomeFantasia { get; protected set; } = string.Empty;
+        public virtual Cnpj Cnpj { get; protected set; }
+        public virtual bool Ativo { get; protected set; }
 
-
-        private Cliente() { }
-
+        protected Cliente() { }
 
         public Cliente(string nomeFantasia, Cnpj cnpj, bool ativo)
         {
             Id = Guid.NewGuid();
             DefinirNome(nomeFantasia);
-            Cnpj = cnpj; // VO já valida
+            Cnpj = cnpj;
             Ativo = ativo;
         }
 
-
-        public void DefinirNome(string nome)
+        public virtual void DefinirNome(string nome)
         {
             if (string.IsNullOrWhiteSpace(nome))
                 throw new DomainException("Nome fantasia não pode ser vazio.");
             NomeFantasia = nome.Trim();
         }
 
-
-        public void Ativar() => Ativo = true;
-        public void Desativar() => Ativo = false;
+        public virtual void Ativar() => Ativo = true;
+        public virtual void Desativar() => Ativo = false;
     }
 }

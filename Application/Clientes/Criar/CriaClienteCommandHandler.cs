@@ -13,7 +13,7 @@ namespace Application.Clientes.Criar
 
         public async Task<ClienteDto> Handle(CriaClienteCommand cmd, CancellationToken ct = default)
         {
-            var cnpj = new Cnpj(cmd.Cnpj); // valida
+            var cnpj = new Cnpj(cmd.Cnpj);
 
 
             if (await _repo.ExistePorCnpjAsync(cnpj, ct))

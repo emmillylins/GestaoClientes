@@ -1,4 +1,4 @@
-using Domain.Entidades;
+﻿using Domain.Entidades;
 using Domain.ValueObjects;
 using Infrastructure.Interfaces;
 using NHibernate;
@@ -12,42 +12,101 @@ namespace Infrastructure.Repositorios
 
         public NHibernateClienteRepositorio(ISession session)
         {
-            _session = session;
+            _session = session ?? throw new ArgumentNullException(nameof(session));
         }
 
         public async Task AdicionarAsync(Cliente cliente, CancellationToken ct = default)
         {
+            if (cliente == null) throw new ArgumentNullException(nameof(cliente));
+
             using var transacao = _session.BeginTransaction();
             try
             {
+                // Verificar se tabela existe antes de salvar
+                await VerificarTabelaExiste();
+                
                 await _session.SaveAsync(cliente, ct);
+                await _session.FlushAsync(ct);
                 await transacao.CommitAsync(ct);
             }
-            catch
+            catch (Exception ex)
             {
                 await transacao.RollbackAsync(ct);
-                throw;
+                throw new InvalidOperationException($"Erro ao adicionar cliente: {ex.Message}", ex);
             }
         }
 
         public async Task<Cliente?> ObterPorIdAsync(Guid id, CancellationToken ct = default)
         {
-            return await _session.GetAsync<Cliente>(id, ct);
+            try
+            {
+                await VerificarTabelaExiste();
+                return await _session.GetAsync<Cliente>(id, ct);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Erro ao obter cliente por ID {id}: {ex.Message}", ex);
+            }
         }
 
         public async Task<bool> ExistePorCnpjAsync(Cnpj cnpj, CancellationToken ct = default)
         {
-            var count = await _session.Query<Cliente>()
-                .Where(c => c.Cnpj.Numero == cnpj.Numero)
-                .CountAsync(ct);
-            
-            return count > 0;
+            if (cnpj == null) return false;
+
+            try
+            {
+                await VerificarTabelaExiste();
+                
+                var count = await _session.Query<Cliente>()
+                    .Where(c => c.Cnpj.Numero == cnpj.Numero)
+                    .CountAsync(ct);
+                
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Erro ao verificar existência do CNPJ {cnpj.Numero}: {ex.Message}", ex);
+            }
         }
 
         public async Task<IEnumerable<Cliente>> ListarAsync(CancellationToken ct = default)
         {
-            return await _session.Query<Cliente>()
-                .ToListAsync(ct);
+            try
+            {
+                await VerificarTabelaExiste();
+                
+                var clientes = await _session.Query<Cliente>()
+                    .ToListAsync(ct);
+
+                return clientes;
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Erro ao listar clientes: {ex.Message}", ex);
+            }
+        }
+
+        private async Task VerificarTabelaExiste()
+        {
+            try
+            {
+                var result = await _session.CreateSQLQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='Clientes'")
+                    .ListAsync();
+                
+                if (result.Count == 0)
+                {
+                    await _session.CreateSQLQuery(@"
+                        CREATE TABLE IF NOT EXISTS Clientes (
+                            Id TEXT PRIMARY KEY,
+                            NomeFantasia TEXT NOT NULL,
+                            Cnpj TEXT NOT NULL UNIQUE,
+                            Ativo INTEGER NOT NULL
+                        )").ExecuteUpdateAsync();
+                }
+            }
+            catch (Exception)
+            {
+            }
         }
     }
 }
