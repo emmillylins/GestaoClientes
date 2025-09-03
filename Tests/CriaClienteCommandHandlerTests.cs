@@ -20,11 +20,7 @@ namespace Tests
         public CriaClienteCommandHandlerTests()
         {
             _sessionFactory = NHibernateConfig.CriarSessionFactory(emMemoria: true);
-
             _session = _sessionFactory.OpenSession();
-
-            _session.CreateSQLQuery("CREATE TABLE IF NOT EXISTS Clientes (Id TEXT PRIMARY KEY, NomeFantasia TEXT NOT NULL, Cnpj TEXT NOT NULL UNIQUE, Ativo INTEGER NOT NULL)").ExecuteUpdate();
-
             _repositorio = new NHibernateClienteRepositorio(_session);
             _manipulador = new CriaClienteCommandHandler(_repositorio);
         }

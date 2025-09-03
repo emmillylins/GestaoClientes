@@ -43,7 +43,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-// Log de inicialização
-Console.WriteLine("Banco em memória configurado");
-
 app.Run();

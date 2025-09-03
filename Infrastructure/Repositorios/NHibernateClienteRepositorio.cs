@@ -22,9 +22,6 @@ namespace Infrastructure.Repositorios
             using var transacao = _session.BeginTransaction();
             try
             {
-                // Verificar se tabela existe antes de salvar
-                await VerificarTabelaExiste();
-                
                 await _session.SaveAsync(cliente, ct);
                 await _session.FlushAsync(ct);
                 await transacao.CommitAsync(ct);
@@ -40,7 +37,6 @@ namespace Infrastructure.Repositorios
         {
             try
             {
-                await VerificarTabelaExiste();
                 return await _session.GetAsync<Cliente>(id, ct);
             }
             catch (Exception ex)
@@ -55,8 +51,6 @@ namespace Infrastructure.Repositorios
 
             try
             {
-                await VerificarTabelaExiste();
-                
                 var count = await _session.Query<Cliente>()
                     .Where(c => c.Cnpj.Numero == cnpj.Numero)
                     .CountAsync(ct);
@@ -73,8 +67,6 @@ namespace Infrastructure.Repositorios
         {
             try
             {
-                await VerificarTabelaExiste();
-                
                 var clientes = await _session.Query<Cliente>()
                     .ToListAsync(ct);
 
@@ -83,29 +75,6 @@ namespace Infrastructure.Repositorios
             catch (Exception ex)
             {
                 throw new InvalidOperationException($"Erro ao listar clientes: {ex.Message}", ex);
-            }
-        }
-
-        private async Task VerificarTabelaExiste()
-        {
-            try
-            {
-                var result = await _session.CreateSQLQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='Clientes'")
-                    .ListAsync();
-                
-                if (result.Count == 0)
-                {
-                    await _session.CreateSQLQuery(@"
-                        CREATE TABLE IF NOT EXISTS Clientes (
-                            Id TEXT PRIMARY KEY,
-                            NomeFantasia TEXT NOT NULL,
-                            Cnpj TEXT NOT NULL UNIQUE,
-                            Ativo INTEGER NOT NULL
-                        )").ExecuteUpdateAsync();
-                }
-            }
-            catch (Exception)
-            {
             }
         }
     }

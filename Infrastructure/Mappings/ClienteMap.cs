@@ -12,7 +12,7 @@ namespace Infrastructure.Mappings
             Id(x => x.Id)
                 .GeneratedBy.Assigned()
                 .Column("Id")
-                .CustomType("string");
+                .CustomType<GuidStringUserType>();
                 
             Map(x => x.NomeFantasia)
                 .Column("NomeFantasia")

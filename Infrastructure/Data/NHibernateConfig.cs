@@ -46,46 +46,6 @@ namespace Infrastructure.Data
                     })
                     .BuildSessionFactory();
 
-                // Verifica se tabela foi criada
-                try
-                {
-                    using var session = _sessionFactory!.OpenSession();
-                    using var transaction = session.BeginTransaction();
-
-                    // Testar se consegue contar registros
-                    var count = session.CreateSQLQuery("SELECT COUNT(*) FROM Clientes")
-                        .UniqueResult<long>();
-
-                    transaction.Commit();
-                    Console.WriteLine($"Banco inicializado - {count} registros encontrados");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Erro na verificação: {ex.Message}");
-
-                    // Tentar criar tabela manualmente
-                    try
-                    {
-                        using var session = _sessionFactory!.OpenSession();
-                        using var transaction = session.BeginTransaction();
-
-                        session.CreateSQLQuery(@"
-                        CREATE TABLE IF NOT EXISTS Clientes (
-                            Id TEXT PRIMARY KEY,
-                            NomeFantasia TEXT NOT NULL,
-                            Cnpj TEXT NOT NULL UNIQUE,
-                            Ativo INTEGER NOT NULL
-                        )").ExecuteUpdate();
-
-                        transaction.Commit();
-                        Console.WriteLine("Tabela criada manualmente");
-                    }
-                    catch (Exception ex2)
-                    {
-                        Console.WriteLine($"Erro ao criar tabela: {ex2.Message}");
-                    }
-                }
-
                 return _sessionFactory;
             }
         }
