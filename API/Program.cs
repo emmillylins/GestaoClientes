@@ -1,6 +1,8 @@
 ﻿using Application.Clientes.Criar;
 using Application.Clientes.Obter;
 using Application.Clientes.Listar;
+using Application.Clientes.Ativar;
+using Application.Clientes.Desativar;
 using Infrastructure;
 using Microsoft.OpenApi.Models;
 
@@ -21,6 +23,8 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<CriaClienteCommandHandler>();
 builder.Services.AddScoped<ObtemClientePorIdQueryHandler>();
 builder.Services.AddScoped<ListarClientesQueryHandler>();
+builder.Services.AddScoped<AtivarClienteCommandHandler>();
+builder.Services.AddScoped<DesativarClienteCommandHandler>();
 
 builder.Services.AddInfrastructure();
 

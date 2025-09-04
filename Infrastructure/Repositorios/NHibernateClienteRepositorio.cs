@@ -77,5 +77,23 @@ namespace Infrastructure.Repositorios
                 throw new InvalidOperationException($"Erro ao listar clientes: {ex.Message}", ex);
             }
         }
+
+        public async Task AtualizarAsync(Cliente cliente, CancellationToken ct = default)
+        {
+            ArgumentNullException.ThrowIfNull(cliente);
+
+            using var transacao = _session.BeginTransaction();
+            try
+            {
+                await _session.UpdateAsync(cliente, ct);
+                await _session.FlushAsync(ct);
+                await transacao.CommitAsync(ct);
+            }
+            catch (Exception ex)
+            {
+                await transacao.RollbackAsync(ct);
+                throw new InvalidOperationException($"Erro ao atualizar cliente: {ex.Message}", ex);
+            }
+        }
     }
 }

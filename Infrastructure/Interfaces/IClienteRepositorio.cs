@@ -9,5 +9,6 @@ namespace Infrastructure.Interfaces
         Task<Cliente?> ObterPorIdAsync(Guid id, CancellationToken ct = default);
         Task<bool> ExistePorCnpjAsync(Cnpj cnpj, CancellationToken ct = default);
         Task<IEnumerable<Cliente>> ListarAsync(CancellationToken ct = default);
+        Task AtualizarAsync(Cliente cliente, CancellationToken ct = default);
     }
 }
