@@ -1,4 +1,4 @@
-using Application.Clientes.Atualizar.Ativar;
+using Application.Clientes.Atualizar.Desativar;
 using Domain.Entidades;
 using Domain.ValueObjects;
 using Infrastructure.Interfaces;
@@ -7,46 +7,46 @@ using NHibernate;
 
 namespace Tests.Clientes
 {
-    public class AtivarClienteCommandHandlerTests : IDisposable
+    public class DesativaClienteCommandHandlerTests : IDisposable
     {
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly AtivaClienteCommandHandler _manipulador;
+        private readonly DesativaClienteCommandHandler _manipulador;
 
-        public AtivarClienteCommandHandlerTests()
+        public DesativaClienteCommandHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new AtivaClienteCommandHandler(_repositorio);
+            _manipulador = new DesativaClienteCommandHandler(_repositorio);
         }
 
         [Fact]
-        public async Task Handle_DeveAtivarClienteComSucesso_QuandoClienteEstaInativo()
+        public async Task Handle_DeveDesativarClienteComSucesso_QuandoClienteEstaAtivo()
         {
             var cnpj = new Cnpj("11.222.333/0001-81");
-            var cliente = new Cliente("Empresa Teste", cnpj, false);
+            var cliente = new Cliente("Empresa Teste", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtivaClienteCommand(cliente.Id);
+            var comando = new DesativaClienteCommand(cliente.Id);
 
             var retorno = await _manipulador.Handle(comando);
 
             Assert.NotNull(retorno);
             Assert.Equal(cliente.Id, retorno.Id);
-            Assert.True(retorno.Ativo);
+            Assert.False(retorno.Ativo);
 
             var clienteSalvo = await _repositorio.ObterPorIdAsync(cliente.Id);
             Assert.NotNull(clienteSalvo);
-            Assert.True(clienteSalvo.Ativo);
+            Assert.False(clienteSalvo.Ativo);
         }
 
         [Fact]
         public async Task Handle_DeveRetornarNull_QuandoClienteNaoExiste()
         {
             var idInexistente = Guid.NewGuid();
-            var comando = new AtivaClienteCommand(idInexistente);
+            var comando = new DesativaClienteCommand(idInexistente);
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -54,28 +54,28 @@ namespace Tests.Clientes
         }
 
         [Fact]
-        public async Task Handle_DeveLancarExcecao_QuandoClienteJaEstaAtivo()
-        {
-            var cnpj = new Cnpj("11.222.333/0001-81");
-            var cliente = new Cliente("Empresa Teste", cnpj, true);
-            await _repositorio.AdicionarAsync(cliente);
-
-            var comando = new AtivaClienteCommand(cliente.Id);
-
-            var excecao = await Assert.ThrowsAsync<InvalidOperationException>(
-                () => _manipulador.Handle(comando));
-
-            Assert.Equal("Cliente já está ativo.", excecao.Message);
-        }
-
-        [Fact]
-        public async Task Handle_DeveManterOutrosDadosInalterados_QuandoAtiva()
+        public async Task Handle_DeveLancarExcecao_QuandoClienteJaEstaInativo()
         {
             var cnpj = new Cnpj("11.222.333/0001-81");
             var cliente = new Cliente("Empresa Teste", cnpj, false);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtivaClienteCommand(cliente.Id);
+            var comando = new DesativaClienteCommand(cliente.Id);
+
+            var excecao = await Assert.ThrowsAsync<InvalidOperationException>(
+                () => _manipulador.Handle(comando));
+
+            Assert.Equal("Cliente já está inativo.", excecao.Message);
+        }
+
+        [Fact]
+        public async Task Handle_DeveManterOutrosDadosInalterados_QuandoDesativa()
+        {
+            var cnpj = new Cnpj("11.222.333/0001-81");
+            var cliente = new Cliente("Empresa Teste", cnpj, true);
+            await _repositorio.AdicionarAsync(cliente);
+
+            var comando = new DesativaClienteCommand(cliente.Id);
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -85,29 +85,29 @@ namespace Tests.Clientes
         }
 
         [Fact]
-        public async Task Handle_DeveAtivarApenasClienteEspecifico_QuandoExistemMultiplosClientes()
+        public async Task Handle_DeveDesativarApenasClienteEspecifico_QuandoExistemMultiplosClientes()
         {
             var cnpj1 = new Cnpj("11.222.333/0001-81");
-            var cnpj2 = new Cnpj("43.965.298/0001-87");
+            var cnpj2 = new Cnpj("52.870.136/0001-56");
 
-            var cliente1 = new Cliente("Primeira Empresa", cnpj1, false);
-            var cliente2 = new Cliente("Segunda Empresa", cnpj2, false);
+            var cliente1 = new Cliente("Primeira Empresa", cnpj1, true);
+            var cliente2 = new Cliente("Segunda Empresa", cnpj2, true);
 
             await _repositorio.AdicionarAsync(cliente1);
             await _repositorio.AdicionarAsync(cliente2);
 
-            var comando = new AtivaClienteCommand(cliente1.Id);
+            var comando = new DesativaClienteCommand(cliente1.Id);
 
             var retorno = await _manipulador.Handle(comando);
 
             Assert.NotNull(retorno);
-            Assert.True(retorno.Ativo);
+            Assert.False(retorno.Ativo);
 
             var cliente1Salvo = await _repositorio.ObterPorIdAsync(cliente1.Id);
             var cliente2Salvo = await _repositorio.ObterPorIdAsync(cliente2.Id);
 
-            Assert.True(cliente1Salvo!.Ativo);
-            Assert.False(cliente2Salvo!.Ativo);
+            Assert.False(cliente1Salvo!.Ativo);
+            Assert.True(cliente2Salvo!.Ativo); // Não deve ser afetado
         }
 
         public void Dispose()

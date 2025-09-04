@@ -8,14 +8,14 @@ using NHibernate;
 
 namespace Tests.Clientes
 {
-    public class AtualizarClienteCommandHandlerTests : IDisposable
+    public class AtualizaClienteCommandHandlerTests : IDisposable
     {
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
         private readonly AtualizaClienteCommandHandler _manipulador;
 
-        public AtualizarClienteCommandHandlerTests()
+        public AtualizaClienteCommandHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();

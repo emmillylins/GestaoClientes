@@ -7,14 +7,14 @@ using NHibernate;
 
 namespace Tests.Clientes
 {
-    public class ObterClientePorIdQueryHandlerTests : IDisposable
+    public class ObtemClientePorIdQueryHandlerTests : IDisposable
     {
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
         private readonly ObtemClientePorIdQueryHandler _manipulador;
 
-        public ObterClientePorIdQueryHandlerTests()
+        public ObtemClientePorIdQueryHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();
