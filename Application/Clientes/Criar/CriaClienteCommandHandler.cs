@@ -5,13 +5,13 @@ using Infrastructure.Interfaces;
 
 namespace Application.Clientes.Criar
 {
-    public class CriarClienteCommandHandler
+    public class CriaClienteCommandHandler
     {
         private readonly IClienteRepositorio _repo;
-        public CriarClienteCommandHandler(IClienteRepositorio repo) => _repo = repo;
+        public CriaClienteCommandHandler(IClienteRepositorio repo) => _repo = repo;
 
 
-        public async Task<ClienteDto> Handle(CriarClienteCommand cmd, CancellationToken ct = default)
+        public async Task<ClienteDto> Handle(CriaClienteCommand cmd, CancellationToken ct = default)
         {
             var cnpj = new Cnpj(cmd.Cnpj);
 

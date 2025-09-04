@@ -12,20 +12,20 @@ namespace API.Controllers
     [Route("api/clientes")]
     public class ClientesController : ControllerBase
     {
-        private readonly CriarClienteCommandHandler _manipuladorCriacao;
-        private readonly ObterClientePorIdQueryHandler _manipuladorObterPorId;
-        private readonly ListarClientesQueryHandler _manipuladorListagem;
-        private readonly AtivarClienteCommandHandler _manipuladorAtivacao;
-        private readonly DesativarClienteCommandHandler _manipuladorDesativacao;
-        private readonly AtualizarClienteCommandHandler _manipuladorAtualizacao;
+        private readonly CriaClienteCommandHandler _manipuladorCriacao;
+        private readonly ObtemClientePorIdQueryHandler _manipuladorObterPorId;
+        private readonly ListaClientesQueryHandler _manipuladorListagem;
+        private readonly AtivaClienteCommandHandler _manipuladorAtivacao;
+        private readonly DesativaClienteCommandHandler _manipuladorDesativacao;
+        private readonly AtualizaClienteCommandHandler _manipuladorAtualizacao;
 
         public ClientesController(
-            CriarClienteCommandHandler manipuladorCriacao,
-            ObterClientePorIdQueryHandler manipuladorObterPorId,
-            ListarClientesQueryHandler manipuladorListagem,
-            AtivarClienteCommandHandler manipuladorAtivacao,
-            DesativarClienteCommandHandler manipuladorDesativacao,
-            AtualizarClienteCommandHandler manipuladorAtualizacao)
+            CriaClienteCommandHandler manipuladorCriacao,
+            ObtemClientePorIdQueryHandler manipuladorObterPorId,
+            ListaClientesQueryHandler manipuladorListagem,
+            AtivaClienteCommandHandler manipuladorAtivacao,
+            DesativaClienteCommandHandler manipuladorDesativacao,
+            AtualizaClienteCommandHandler manipuladorAtualizacao)
         {
             _manipuladorCriacao = manipuladorCriacao;
             _manipuladorObterPorId = manipuladorObterPorId;
@@ -36,7 +36,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Criar([FromBody] CriarClienteCommand comando, CancellationToken ct)
+        public async Task<IActionResult> Criar([FromBody] CriaClienteCommand comando, CancellationToken ct)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPorId(Guid id, CancellationToken ct)
         {
-            var consulta = new ObterClientePorIdQuery(id);
+            var consulta = new ObtemClientePorIdQuery(id);
             var retorno = await _manipuladorObterPorId.Handle(consulta, ct);
             
             return retorno is null ? NotFound() : Ok(retorno);
@@ -61,13 +61,13 @@ namespace API.Controllers
         [HttpGet]
         public async Task<IActionResult> ObterTodos(CancellationToken ct)
         {
-            var consulta = new ListarClientesQuery();
+            var consulta = new ListaClientesQuery();
             var retorno = await _manipuladorListagem.Handle(consulta, ct);
             return Ok(retorno);
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarClienteCommand comando, CancellationToken ct)
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizaClienteCommand comando, CancellationToken ct)
         {
             try
             {
@@ -87,7 +87,7 @@ namespace API.Controllers
         {
             try
             {
-                var comando = new AtivarClienteCommand(id);
+                var comando = new AtivaClienteCommand(id);
                 var retorno = await _manipuladorAtivacao.Handle(comando, ct);
                 
                 return retorno is null ? NotFound() : Ok(retorno);
@@ -103,7 +103,7 @@ namespace API.Controllers
         {
             try
             {
-                var comando = new DesativarClienteCommand(id);
+                var comando = new DesativaClienteCommand(id);
                 var retorno = await _manipuladorDesativacao.Handle(comando, ct);
                 
                 return retorno is null ? NotFound() : Ok(retorno);

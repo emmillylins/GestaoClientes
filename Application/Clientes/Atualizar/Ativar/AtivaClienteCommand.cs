@@ -1,14 +1,14 @@
 namespace Application.Clientes.Atualizar.Ativar
 {
-    public class AtivarClienteCommand
+    public class AtivaClienteCommand
     {
         public Guid Id { get; set; }
 
-        public AtivarClienteCommand()
+        public AtivaClienteCommand()
         {
         }
 
-        public AtivarClienteCommand(Guid id)
+        public AtivaClienteCommand(Guid id)
         {
             Id = id;
         }

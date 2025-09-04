@@ -1,14 +1,14 @@
 namespace Application.Clientes.Atualizar.Desativar
 {
-    public class DesativarClienteCommand
+    public class DesativaClienteCommand
     {
         public Guid Id { get; set; }
 
-        public DesativarClienteCommand()
+        public DesativaClienteCommand()
         {
         }
 
-        public DesativarClienteCommand(Guid id)
+        public DesativaClienteCommand(Guid id)
         {
             Id = id;
         }

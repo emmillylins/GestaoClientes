@@ -1,15 +1,15 @@
 namespace Application.Clientes.Atualizar
 {
-    public class AtualizarClienteCommand
+    public class AtualizaClienteCommand
     {
         public Guid Id { get; set; }
         public string NomeFantasia { get; set; } = string.Empty;
 
-        public AtualizarClienteCommand()
+        public AtualizaClienteCommand()
         {
         }
 
-        public AtualizarClienteCommand(Guid id, string nomeFantasia)
+        public AtualizaClienteCommand(Guid id, string nomeFantasia)
         {
             Id = id;
             NomeFantasia = nomeFantasia;

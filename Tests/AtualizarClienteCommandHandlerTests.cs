@@ -13,14 +13,14 @@ namespace Tests
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly AtualizarClienteCommandHandler _manipulador;
+        private readonly AtualizaClienteCommandHandler _manipulador;
 
         public AtualizarClienteCommandHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new AtualizarClienteCommandHandler(_repositorio);
+            _manipulador = new AtualizaClienteCommandHandler(_repositorio);
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace Tests
             var cliente = new Cliente("Nome Original", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtualizarClienteCommand(cliente.Id, "Nome Atualizado");
+            var comando = new AtualizaClienteCommand(cliente.Id, "Nome Atualizado");
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -49,7 +49,7 @@ namespace Tests
         public async Task Handle_DeveRetornarNull_QuandoClienteNaoExiste()
         {
             var idInexistente = Guid.NewGuid();
-            var comando = new AtualizarClienteCommand(idInexistente, "Nome Teste");
+            var comando = new AtualizaClienteCommand(idInexistente, "Nome Teste");
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -63,7 +63,7 @@ namespace Tests
             var cliente = new Cliente("Nome Original", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtualizarClienteCommand(cliente.Id, "");
+            var comando = new AtualizaClienteCommand(cliente.Id, "");
 
             var excecao = await Assert.ThrowsAsync<DomainException>(
                 () => _manipulador.Handle(comando));
@@ -78,7 +78,7 @@ namespace Tests
             var cliente = new Cliente("Nome Original", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtualizarClienteCommand(cliente.Id, null!);
+            var comando = new AtualizaClienteCommand(cliente.Id, null!);
 
             var excecao = await Assert.ThrowsAsync<DomainException>(
                 () => _manipulador.Handle(comando));
@@ -93,7 +93,7 @@ namespace Tests
             var cliente = new Cliente("Nome Original", cnpj, false);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtualizarClienteCommand(cliente.Id, "Nome Atualizado");
+            var comando = new AtualizaClienteCommand(cliente.Id, "Nome Atualizado");
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -110,7 +110,7 @@ namespace Tests
             var idOriginal = cliente.Id;
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtualizarClienteCommand(cliente.Id, "   Nome Com Espacos   ");
+            var comando = new AtualizaClienteCommand(cliente.Id, "   Nome Com Espacos   ");
 
             var retorno = await _manipulador.Handle(comando);
 

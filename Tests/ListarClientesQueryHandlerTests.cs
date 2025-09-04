@@ -12,20 +12,20 @@ namespace Tests
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly ListarClientesQueryHandler _manipulador;
+        private readonly ListaClientesQueryHandler _manipulador;
 
         public ListarClientesQueryHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new ListarClientesQueryHandler(_repositorio);
+            _manipulador = new ListaClientesQueryHandler(_repositorio);
         }
 
         [Fact]
         public async Task Handle_DeveRetornarListaVazia_QuandoNaoExistemClientes()
         {
-            var consulta = new ListarClientesQuery();
+            var consulta = new ListaClientesQuery();
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -48,7 +48,7 @@ namespace Tests
             await _repositorio.AdicionarAsync(cliente2);
             await _repositorio.AdicionarAsync(cliente3);
 
-            var consulta = new ListarClientesQuery();
+            var consulta = new ListaClientesQuery();
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -68,7 +68,7 @@ namespace Tests
             var cliente = new Cliente("Empresa Teste", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var consulta = new ListarClientesQuery();
+            var consulta = new ListaClientesQuery();
 
             var retorno = await _manipulador.Handle(consulta);
 

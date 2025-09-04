@@ -12,14 +12,14 @@ namespace Tests
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly AtivarClienteCommandHandler _manipulador;
+        private readonly AtivaClienteCommandHandler _manipulador;
 
         public AtivarClienteCommandHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new AtivarClienteCommandHandler(_repositorio);
+            _manipulador = new AtivaClienteCommandHandler(_repositorio);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Tests
             var cliente = new Cliente("Empresa Teste", cnpj, false);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtivarClienteCommand(cliente.Id);
+            var comando = new AtivaClienteCommand(cliente.Id);
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -46,7 +46,7 @@ namespace Tests
         public async Task Handle_DeveRetornarNull_QuandoClienteNaoExiste()
         {
             var idInexistente = Guid.NewGuid();
-            var comando = new AtivarClienteCommand(idInexistente);
+            var comando = new AtivaClienteCommand(idInexistente);
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -60,7 +60,7 @@ namespace Tests
             var cliente = new Cliente("Empresa Teste", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtivarClienteCommand(cliente.Id);
+            var comando = new AtivaClienteCommand(cliente.Id);
 
             var excecao = await Assert.ThrowsAsync<InvalidOperationException>(
                 () => _manipulador.Handle(comando));
@@ -75,7 +75,7 @@ namespace Tests
             var cliente = new Cliente("Empresa Teste", cnpj, false);
             await _repositorio.AdicionarAsync(cliente);
 
-            var comando = new AtivarClienteCommand(cliente.Id);
+            var comando = new AtivaClienteCommand(cliente.Id);
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -96,7 +96,7 @@ namespace Tests
             await _repositorio.AdicionarAsync(cliente1);
             await _repositorio.AdicionarAsync(cliente2);
 
-            var comando = new AtivarClienteCommand(cliente1.Id);
+            var comando = new AtivaClienteCommand(cliente1.Id);
 
             var retorno = await _manipulador.Handle(comando);
 

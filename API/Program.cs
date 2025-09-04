@@ -21,12 +21,12 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-builder.Services.AddScoped<CriarClienteCommandHandler>();
-builder.Services.AddScoped<ListarClientesQueryHandler>();
-builder.Services.AddScoped<ObterClientePorIdQueryHandler>();
-builder.Services.AddScoped<AtualizarClienteCommandHandler>();
-builder.Services.AddScoped<AtivarClienteCommandHandler>();
-builder.Services.AddScoped<DesativarClienteCommandHandler>();
+builder.Services.AddScoped<CriaClienteCommandHandler>();
+builder.Services.AddScoped<ListaClientesQueryHandler>();
+builder.Services.AddScoped<ObtemClientePorIdQueryHandler>();
+builder.Services.AddScoped<AtualizaClienteCommandHandler>();
+builder.Services.AddScoped<AtivaClienteCommandHandler>();
+builder.Services.AddScoped<DesativaClienteCommandHandler>();
 
 builder.Services.AddInfrastructure();
 

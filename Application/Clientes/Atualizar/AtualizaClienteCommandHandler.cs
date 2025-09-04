@@ -3,13 +3,13 @@ using Infrastructure.Interfaces;
 
 namespace Application.Clientes.Atualizar
 {
-    public class AtualizarClienteCommandHandler
+    public class AtualizaClienteCommandHandler
     {
         private readonly IClienteRepositorio _repo;
         
-        public AtualizarClienteCommandHandler(IClienteRepositorio repo) => _repo = repo;
+        public AtualizaClienteCommandHandler(IClienteRepositorio repo) => _repo = repo;
 
-        public async Task<ClienteDto?> Handle(AtualizarClienteCommand cmd, CancellationToken ct = default)
+        public async Task<ClienteDto?> Handle(AtualizaClienteCommand cmd, CancellationToken ct = default)
         {
             var cliente = await _repo.ObterPorIdAsync(cmd.Id, ct);
             

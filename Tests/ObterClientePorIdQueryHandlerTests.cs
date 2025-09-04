@@ -12,14 +12,14 @@ namespace Tests
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly ObterClientePorIdQueryHandler _manipulador;
+        private readonly ObtemClientePorIdQueryHandler _manipulador;
 
         public ObterClientePorIdQueryHandlerTests()
         {
             _sessionFactory = TestNHibernateConfig.CriarSessionFactory();
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new ObterClientePorIdQueryHandler(_repositorio);
+            _manipulador = new ObtemClientePorIdQueryHandler(_repositorio);
         }
 
         [Fact]
@@ -29,7 +29,7 @@ namespace Tests
             var cliente = new Cliente("Empresa Teste", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var consulta = new ObterClientePorIdQuery(cliente.Id);
+            var consulta = new ObtemClientePorIdQuery(cliente.Id);
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -44,7 +44,7 @@ namespace Tests
         public async Task Handle_DeveRetornarNull_QuandoIdNaoExiste()
         {
             var idInexistente = Guid.NewGuid();
-            var consulta = new ObterClientePorIdQuery(idInexistente);
+            var consulta = new ObtemClientePorIdQuery(idInexistente);
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -63,7 +63,7 @@ namespace Tests
             await _repositorio.AdicionarAsync(cliente1);
             await _repositorio.AdicionarAsync(cliente2);
 
-            var consulta = new ObterClientePorIdQuery(cliente2.Id);
+            var consulta = new ObtemClientePorIdQuery(cliente2.Id);
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -77,7 +77,7 @@ namespace Tests
         [Fact]
         public async Task Handle_DeveRetornarNull_QuandoIdEhGuidEmpty()
         {
-            var consulta = new ObterClientePorIdQuery(Guid.Empty);
+            var consulta = new ObtemClientePorIdQuery(Guid.Empty);
 
             var retorno = await _manipulador.Handle(consulta);
 

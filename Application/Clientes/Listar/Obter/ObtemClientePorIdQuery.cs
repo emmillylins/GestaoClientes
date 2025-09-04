@@ -1,14 +1,14 @@
 ﻿namespace Application.Clientes.Listar.Obter
 {
-    public class ObterClientePorIdQuery
+    public class ObtemClientePorIdQuery
     {
         public Guid Id { get; set; }
 
-        public ObterClientePorIdQuery()
+        public ObtemClientePorIdQuery()
         {
         }
 
-        public ObterClientePorIdQuery(Guid id)
+        public ObtemClientePorIdQuery(Guid id)
         {
             Id = id;
         }
