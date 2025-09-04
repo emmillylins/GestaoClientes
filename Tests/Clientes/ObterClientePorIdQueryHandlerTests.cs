@@ -5,7 +5,7 @@ using Infrastructure.Interfaces;
 using Infrastructure.Repositorios;
 using NHibernate;
 
-namespace Tests
+namespace Tests.Clientes
 {
     public class ObterClientePorIdQueryHandlerTests : IDisposable
     {
