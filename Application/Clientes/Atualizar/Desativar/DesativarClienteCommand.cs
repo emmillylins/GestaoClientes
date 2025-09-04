@@ -1,4 +1,4 @@
-namespace Application.Clientes.Desativar
+namespace Application.Clientes.Atualizar.Desativar
 {
     public class DesativarClienteCommand
     {

@@ -1,8 +1,9 @@
 using Application.Clientes.Criar;
 using Application.Clientes.Obter;
 using Application.Clientes.Listar;
-using Application.Clientes.Ativar;
-using Application.Clientes.Desativar;
+using Application.Clientes.Atualizar;
+using Application.Clientes.Atualizar.Ativar;
+using Application.Clientes.Atualizar.Desativar;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -16,19 +17,22 @@ namespace API.Controllers
         private readonly ListarClientesQueryHandler _manipuladorListagem;
         private readonly AtivarClienteCommandHandler _manipuladorAtivacao;
         private readonly DesativarClienteCommandHandler _manipuladorDesativacao;
+        private readonly AtualizarClienteCommandHandler _manipuladorAtualizacao;
 
         public ClientesController(
             CriaClienteCommandHandler manipuladorCriacao,
             ObtemClientePorIdQueryHandler manipuladorObterPorId,
             ListarClientesQueryHandler manipuladorListagem,
             AtivarClienteCommandHandler manipuladorAtivacao,
-            DesativarClienteCommandHandler manipuladorDesativacao)
+            DesativarClienteCommandHandler manipuladorDesativacao,
+            AtualizarClienteCommandHandler manipuladorAtualizacao)
         {
             _manipuladorCriacao = manipuladorCriacao;
             _manipuladorObterPorId = manipuladorObterPorId;
             _manipuladorListagem = manipuladorListagem;
             _manipuladorAtivacao = manipuladorAtivacao;
             _manipuladorDesativacao = manipuladorDesativacao;
+            _manipuladorAtualizacao = manipuladorAtualizacao;
         }
 
         [HttpPost]
@@ -60,6 +64,22 @@ namespace API.Controllers
             var consulta = new ListarClientesQuery();
             var retorno = await _manipuladorListagem.Handle(consulta, ct);
             return Ok(retorno);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Atualizar(Guid id, [FromBody] AtualizarClienteCommand comando, CancellationToken ct)
+        {
+            try
+            {
+                comando.Id = id;
+                var retorno = await _manipuladorAtualizacao.Handle(comando, ct);
+                
+                return retorno is null ? NotFound() : Ok(retorno);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPatch("{id}/ativar")]

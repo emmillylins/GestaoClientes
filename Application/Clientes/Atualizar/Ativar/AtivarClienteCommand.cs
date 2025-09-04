@@ -1,4 +1,4 @@
-namespace Application.Clientes.Ativar
+namespace Application.Clientes.Atualizar.Ativar
 {
     public class AtivarClienteCommand
     {

@@ -1,8 +1,9 @@
 ﻿using Application.Clientes.Criar;
 using Application.Clientes.Obter;
 using Application.Clientes.Listar;
-using Application.Clientes.Ativar;
-using Application.Clientes.Desativar;
+using Application.Clientes.Atualizar;
+using Application.Clientes.Atualizar.Ativar;
+using Application.Clientes.Atualizar.Desativar;
 using Infrastructure;
 using Microsoft.OpenApi.Models;
 
@@ -25,6 +26,7 @@ builder.Services.AddScoped<ObtemClientePorIdQueryHandler>();
 builder.Services.AddScoped<ListarClientesQueryHandler>();
 builder.Services.AddScoped<AtivarClienteCommandHandler>();
 builder.Services.AddScoped<DesativarClienteCommandHandler>();
+builder.Services.AddScoped<AtualizarClienteCommandHandler>();
 
 builder.Services.AddInfrastructure();
 

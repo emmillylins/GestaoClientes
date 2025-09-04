@@ -1,25 +1,22 @@
 using Application.DTOs;
 using Infrastructure.Interfaces;
 
-namespace Application.Clientes.Desativar
+namespace Application.Clientes.Atualizar
 {
-    public class DesativarClienteCommandHandler
+    public class AtualizarClienteCommandHandler
     {
         private readonly IClienteRepositorio _repo;
         
-        public DesativarClienteCommandHandler(IClienteRepositorio repo) => _repo = repo;
+        public AtualizarClienteCommandHandler(IClienteRepositorio repo) => _repo = repo;
 
-        public async Task<ClienteDto?> Handle(DesativarClienteCommand cmd, CancellationToken ct = default)
+        public async Task<ClienteDto?> Handle(AtualizarClienteCommand cmd, CancellationToken ct = default)
         {
             var cliente = await _repo.ObterPorIdAsync(cmd.Id, ct);
             
             if (cliente is null)
                 return null;
 
-            if (!cliente.Ativo)
-                throw new InvalidOperationException("Cliente já está inativo.");
-
-            cliente.Desativar();
+            cliente.DefinirNome(cmd.NomeFantasia);
             await _repo.AtualizarAsync(cliente, ct);
 
             return new ClienteDto(cliente.Id, cliente.NomeFantasia, cliente.Cnpj, cliente.Ativo);
