@@ -15,10 +15,7 @@ namespace Domain.ValueObjects
         public Cnpj(string valor)
         {
             if (string.IsNullOrEmpty(valor))
-            {
-                Numero = string.Empty;
-                return;
-            }
+                throw new DomainException("CNPJ inválido.");
 
             var digitos = Regex.Replace(valor, @"\n|\r|\s|\.|-|/", string.Empty);
             if (digitos.Length != 14 || !Regex.IsMatch(digitos, "^\\d{14}$") || !EhCnpjValido(digitos))
