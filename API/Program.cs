@@ -1,6 +1,6 @@
 ﻿using Application.Clientes.Criar;
-using Application.Clientes.Obter;
 using Application.Clientes.Listar;
+using Application.Clientes.Listar.Obter;
 using Application.Clientes.Atualizar;
 using Application.Clientes.Atualizar.Ativar;
 using Application.Clientes.Atualizar.Desativar;
@@ -15,18 +15,18 @@ builder.Services.AddSwaggerGen(options =>
 {
     options.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Minha API",
+        Title = "Gestão de Clientes",
         Version = "v1",
-        Description = "API para gerenciamento de clientes com CNPJ"
+        Description = "API para gerenciamento de clientes"
     });
 });
 
-builder.Services.AddScoped<CriaClienteCommandHandler>();
-builder.Services.AddScoped<ObtemClientePorIdQueryHandler>();
+builder.Services.AddScoped<CriarClienteCommandHandler>();
 builder.Services.AddScoped<ListarClientesQueryHandler>();
+builder.Services.AddScoped<ObterClientePorIdQueryHandler>();
+builder.Services.AddScoped<AtualizarClienteCommandHandler>();
 builder.Services.AddScoped<AtivarClienteCommandHandler>();
 builder.Services.AddScoped<DesativarClienteCommandHandler>();
-builder.Services.AddScoped<AtualizarClienteCommandHandler>();
 
 builder.Services.AddInfrastructure();
 

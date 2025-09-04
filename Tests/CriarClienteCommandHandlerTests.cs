@@ -1,5 +1,5 @@
 ﻿using Application.Clientes.Criar;
-using Application.Clientes.Obter;
+using Application.Clientes.Listar.Obter;
 using Domain.Comum;
 using Domain.Entidades;
 using Domain.ValueObjects;
@@ -10,25 +10,25 @@ using NHibernate;
 
 namespace Tests
 {
-    public class CriaClienteCommandHandlerTests : IDisposable
+    public class CriarClienteCommandHandlerTests : IDisposable
     {
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly CriaClienteCommandHandler _manipulador;
+        private readonly CriarClienteCommandHandler _manipulador;
 
-        public CriaClienteCommandHandlerTests()
+        public CriarClienteCommandHandlerTests()
         {
             _sessionFactory = NHibernateConfig.CriarSessionFactory(emMemoria: true);
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new CriaClienteCommandHandler(_repositorio);
+            _manipulador = new CriarClienteCommandHandler(_repositorio);
         }
 
         [Fact]
         public async Task Handle_DeveCriarClienteComSucesso_QuandoDadosSaoValidos()
         {
-            var comando = new CriaClienteCommand("Empresa Teste", "11.222.333/0001-81", true);
+            var comando = new CriarClienteCommand("Empresa Teste", "11.222.333/0001-81", true);
 
             var retorno = await _manipulador.Handle(comando);
 
@@ -46,8 +46,8 @@ namespace Tests
         public async Task Handle_DeveLancarExcecao_QuandoCnpjJaExiste()
         {
             var cnpjExistente = "11.222.333/0001-81";
-            var comando1 = new CriaClienteCommand("Primeira Empresa", cnpjExistente, true);
-            var comando2 = new CriaClienteCommand("Segunda Empresa", cnpjExistente, true);
+            var comando1 = new CriarClienteCommand("Primeira Empresa", cnpjExistente, true);
+            var comando2 = new CriarClienteCommand("Segunda Empresa", cnpjExistente, true);
 
             await _manipulador.Handle(comando1);
 
@@ -60,7 +60,7 @@ namespace Tests
         [Fact]
         public async Task Handle_DeveLancarExcecao_QuandoNomeFantasiaEhVazio()
         {
-            var comando = new CriaClienteCommand("", "11.222.333/0001-81", true);
+            var comando = new CriarClienteCommand("", "11.222.333/0001-81", true);
 
             var excecao = await Assert.ThrowsAsync<DomainException>(
                 () => _manipulador.Handle(comando));
@@ -71,7 +71,7 @@ namespace Tests
         [Fact]
         public async Task Handle_DeveLancarExcecao_QuandoNomeFantasiaEhNull()
         {
-            var comando = new CriaClienteCommand(null!, "11.222.333/0001-81", true);
+            var comando = new CriarClienteCommand(null!, "11.222.333/0001-81", true);
 
             var excecao = await Assert.ThrowsAsync<DomainException>(
                 () => _manipulador.Handle(comando));
@@ -82,7 +82,7 @@ namespace Tests
         [Fact]
         public async Task Handle_DeveLancarExcecao_QuandoCnpjEhInvalido()
         {
-            var comando = new CriaClienteCommand("Empresa Teste", "11.111.111/0001-11", true);
+            var comando = new CriarClienteCommand("Empresa Teste", "11.111.111/0001-11", true);
 
             var excecao = await Assert.ThrowsAsync<DomainException>(
                 () => _manipulador.Handle(comando));
@@ -93,7 +93,7 @@ namespace Tests
         [Fact]
         public async Task Handle_DeveLancarExcecao_QuandoCnpjEhVazio()
         {
-            var comando = new CriaClienteCommand("Empresa Teste", "", true);
+            var comando = new CriarClienteCommand("Empresa Teste", "", true);
 
             var excecao = await Assert.ThrowsAsync<DomainException>(
                 () => _manipulador.Handle(comando));
@@ -113,14 +113,14 @@ namespace Tests
         private readonly ISessionFactory _sessionFactory;
         private readonly ISession _session;
         private readonly IClienteRepositorio _repositorio;
-        private readonly ObtemClientePorIdQueryHandler _manipulador;
+        private readonly ObterClientePorIdQueryHandler _manipulador;
 
         public ObtemClientePorIdQueryHandlerTests()
         {
             _sessionFactory = NHibernateConfig.CriarSessionFactory(emMemoria: true);
             _session = _sessionFactory.OpenSession();
             _repositorio = new NHibernateClienteRepositorio(_session);
-            _manipulador = new ObtemClientePorIdQueryHandler(_repositorio);
+            _manipulador = new ObterClientePorIdQueryHandler(_repositorio);
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace Tests
             var cliente = new Cliente("Empresa Teste", cnpj, true);
             await _repositorio.AdicionarAsync(cliente);
 
-            var consulta = new ObtemClientePorIdQuery(cliente.Id);
+            var consulta = new ObterClientePorIdQuery(cliente.Id);
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -145,7 +145,7 @@ namespace Tests
         public async Task Handle_DeveRetornarNull_QuandoIdNaoExiste()
         {
             var idInexistente = Guid.NewGuid();
-            var consulta = new ObtemClientePorIdQuery(idInexistente);
+            var consulta = new ObterClientePorIdQuery(idInexistente);
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -164,7 +164,7 @@ namespace Tests
             await _repositorio.AdicionarAsync(cliente1);
             await _repositorio.AdicionarAsync(cliente2);
 
-            var consulta = new ObtemClientePorIdQuery(cliente2.Id);
+            var consulta = new ObterClientePorIdQuery(cliente2.Id);
 
             var retorno = await _manipulador.Handle(consulta);
 
@@ -178,7 +178,7 @@ namespace Tests
         [Fact]
         public async Task Handle_DeveRetornarNull_QuandoIdEhGuidEmpty()
         {
-            var consulta = new ObtemClientePorIdQuery(Guid.Empty);
+            var consulta = new ObterClientePorIdQuery(Guid.Empty);
 
             var retorno = await _manipulador.Handle(consulta);
 

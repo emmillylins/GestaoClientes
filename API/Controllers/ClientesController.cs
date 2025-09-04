@@ -1,10 +1,10 @@
 using Application.Clientes.Criar;
-using Application.Clientes.Obter;
 using Application.Clientes.Listar;
 using Application.Clientes.Atualizar;
 using Application.Clientes.Atualizar.Ativar;
 using Application.Clientes.Atualizar.Desativar;
 using Microsoft.AspNetCore.Mvc;
+using Application.Clientes.Listar.Obter;
 
 namespace API.Controllers
 {
@@ -12,16 +12,16 @@ namespace API.Controllers
     [Route("api/clientes")]
     public class ClientesController : ControllerBase
     {
-        private readonly CriaClienteCommandHandler _manipuladorCriacao;
-        private readonly ObtemClientePorIdQueryHandler _manipuladorObterPorId;
+        private readonly CriarClienteCommandHandler _manipuladorCriacao;
+        private readonly ObterClientePorIdQueryHandler _manipuladorObterPorId;
         private readonly ListarClientesQueryHandler _manipuladorListagem;
         private readonly AtivarClienteCommandHandler _manipuladorAtivacao;
         private readonly DesativarClienteCommandHandler _manipuladorDesativacao;
         private readonly AtualizarClienteCommandHandler _manipuladorAtualizacao;
 
         public ClientesController(
-            CriaClienteCommandHandler manipuladorCriacao,
-            ObtemClientePorIdQueryHandler manipuladorObterPorId,
+            CriarClienteCommandHandler manipuladorCriacao,
+            ObterClientePorIdQueryHandler manipuladorObterPorId,
             ListarClientesQueryHandler manipuladorListagem,
             AtivarClienteCommandHandler manipuladorAtivacao,
             DesativarClienteCommandHandler manipuladorDesativacao,
@@ -36,7 +36,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Criar([FromBody] CriaClienteCommand comando, CancellationToken ct)
+        public async Task<IActionResult> Criar([FromBody] CriarClienteCommand comando, CancellationToken ct)
         {
             try
             {
@@ -52,7 +52,7 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> ObterPorId(Guid id, CancellationToken ct)
         {
-            var consulta = new ObtemClientePorIdQuery(id);
+            var consulta = new ObterClientePorIdQuery(id);
             var retorno = await _manipuladorObterPorId.Handle(consulta, ct);
             
             return retorno is null ? NotFound() : Ok(retorno);
