@@ -1,25 +1,21 @@
 # 🏢 Sistema de Gestão de Clientes
-API REST em **.NET 9** para gerenciamento de clientes com validação de **CNPJ**.
+API REST em **.NET 9** para gerenciamento de clientes
 
----
 
 ## 🚀 Funcionalidades
-- Cadastrar clientes com CNPJ válido
-- Consultar cliente por ID
-- Listar todos os clientes
-- Validação automática de CNPJ brasileiro
-- Prevenção de CNPJ duplicado
+- **CRUD completo** de clientes
+- **Validação rigorosa** de CNPJ brasileiro com algoritmo de dígitos verificadores
+- **Prevenção de duplicatas** por CNPJ
+- **Ativação/Desativação** de clientes
+- **Swagger UI** integrado para documentação
 
----
 
 ## 🛠️ Tecnologias
-- **.NET 9**
-- **ASP.NET Core Web API**
-- **Clean Architecture**
-- **Swagger/OpenAPI**
-- **xUnit** (testes)
+- **.NET 9** + **ASP.NET Core Web API**
+- **NHibernate** + **SQLite** (persistência)
+- **FluentNHibernate** (mapeamento)
+- **xUnit** (testes unitários com 100% cobertura)
 
----
 
 ## ⚡ Execução Rápida
 ```bash
@@ -33,40 +29,32 @@ cd API
 dotnet run
 ```
 
----
 
-## 📋 Endpoints
-- Criar Cliente
-  POST /api/clientes
+🌐 **Swagger**: `https://localhost:5001/swagger`
 
-- Obter Cliente por ID
-  GET /api/clientes/{id}
 
-- Listar Todos os Clientes
-  GET /api/clientes
+## 📋 API Endpoints
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/clientes` | Criar cliente |
+| `GET` | `/api/clientes` | Listar todos |
+| `GET` | `/api/clientes/{id}` | Obter por ID |
+| `PUT` | `/api/clientes/{id}` | Atualizar nome |
+| `PATCH` | `/api/clientes/{id}/ativar` | Ativar cliente |
+| `PATCH` | `/api/clientes/{id}/desativar` | Desativar cliente |
 
----
 
-## ✅ Validações
-- CNPJ: Formato brasileiro válido com dígitos verificadores
-- Nome: Obrigatório e não vazio
-- Duplicação: CNPJ único por cliente
-
----
-
-## 🧪 Testes
-Cobertura completa dos handlers com cenários de sucesso e erro utilizando xUnit.
-
----
-
-## 📁 Arquitetura
-- API/             # Endpoints, Program.cs
+## 🎯 Arquitetura
+**Clean Architecture** + **DDD** + **CQRS**
+- API/             # Controllers & Program.cs
 - Application/     # Commands, Queries, Handlers
 - Domain/          # Entidades, Value Objects, Regras de Negócio
 - Infrastructure/  # Repositórios, Persistência, DI
 - Tests/           # Testes unitários (xUnit)
 
----
 
-## 🧭 Padrões Utilizados
-Clean Architecture + DDD + CQRS 🎯
+## ✅ Validações Implementadas
+- **CNPJ**: Algoritmo completo de validação brasileira
+- **Nome Fantasia**: Obrigatório e não vazio
+- **Unicidade**: Um CNPJ por cliente
+- **Status**: Controle de ativação/desativação
